@@ -1,0 +1,25 @@
+{
+  "name": "smart-interview-management-system",
+  "version": "1.0.0",
+  "description": "Production-style Smart Interview Management System built with MERN Stack",
+  "private": true,
+  "scripts": {
+    "install:server": "cd server && npm install",
+    "install:client": "cd client && npm install",
+    "install:all": "npm run install:server && npm run install:client",
+    "seed": "cd server && npm run seed",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "test:server": "cd server && npm test",
+    "start": "cd server && npm start"
+  },
+  "keywords": [
+    "mern",
+    "interview-management",
+    "recruitment",
+    "resume-screening",
+    "hr-tech"
+  ],
+  "author": "Antigravity Engineering",
+  "license": "ISC"
+}
