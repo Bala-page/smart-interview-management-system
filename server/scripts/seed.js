@@ -12,6 +12,7 @@ const Interview = require('../models/Interview');
 const Feedback = require('../models/Feedback');
 const Notification = require('../models/Notification');
 const AuditLog = require('../models/AuditLog');
+const { seedQuestionBank } = require('./seedQuestions');
 const { uploadFileToGridFS } = require('../services/gridfsService');
 const { connectDB } = require('../config/db');
 
@@ -485,6 +486,9 @@ const seedDatabase = async () => {
         metadata: { candidate: 'Marcus Brody', job: job3.title },
       },
     ]);
+
+    // Seed Assessment Question Bank
+    await seedQuestionBank(recruiter._id);
 
     console.log('===========================================================');
     console.log(' DATABASE SEEDING COMPLETED SUCCESSFULLY!');

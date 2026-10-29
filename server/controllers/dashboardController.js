@@ -176,11 +176,12 @@ const getCandidateDashboard = async (req, res, next) => {
     ]);
 
     // Calculate profile completion score
-    let profileScore = 20; // Base for registering
-    if (candidate.phone && candidate.phone.trim()) profileScore += 20;
-    if (candidate.location && candidate.location.trim()) profileScore += 20;
-    if (candidate.resumeFileId) profileScore += 20;
+    let profileScore = 20; // Base for registering (name + email)
+    if (candidate.phone && candidate.phone.trim()) profileScore += 15;
+    if (candidate.location && candidate.location.trim()) profileScore += 15;
     if (candidate.skills && candidate.skills.length >= 3) profileScore += 20;
+    if ((candidate.experience && candidate.experience > 0) || (candidate.bio && candidate.bio.trim().length > 10)) profileScore += 10;
+    if (candidate.resumeFileId) profileScore += 20;
 
     const shortlistedCount = applications.filter((a) => a.applicationStatus === 'Shortlisted').length;
     const selectedCount = applications.filter((a) => a.applicationStatus === 'Selected').length;
@@ -197,6 +198,13 @@ const getCandidateDashboard = async (req, res, next) => {
       success: true,
       data: {
         profileCompletion: Math.min(100, profileScore),
+        profileDetails: {
+          hasPhone: Boolean(candidate.phone && candidate.phone.trim()),
+          hasLocation: Boolean(candidate.location && candidate.location.trim()),
+          hasSkills: Boolean(candidate.skills && candidate.skills.length >= 3),
+          hasExperienceOrBio: Boolean((candidate.experience && candidate.experience > 0) || (candidate.bio && candidate.bio.trim().length > 10)),
+          hasResume: Boolean(candidate.resumeFileId),
+        },
         kpis: {
           totalApplications: applications.length,
           shortlisted: shortlistedCount,
@@ -205,7 +213,7 @@ const getCandidateDashboard = async (req, res, next) => {
           rejected: rejectedCount,
         },
         recentApplications: applications.slice(0, 5),
-        upcomingInterviews,
+        upcomingInterviews: interviews,
         recommendedJobs: (recommendedJobs.length > 0 ? recommendedJobs : openJobs).slice(0, 4),
       },
     });

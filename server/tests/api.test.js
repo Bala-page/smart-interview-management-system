@@ -1,6 +1,7 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../app');
+const { connectDB } = require('../config/db');
 const User = require('../models/User');
 const Job = require('../models/Job');
 const Application = require('../models/Application');
@@ -20,9 +21,8 @@ let testApplication = null;
 let testInterview = null;
 
 beforeAll(async () => {
-  const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/smart_interview_management';
   if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(mongoUri);
+    await connectDB();
   }
 
   // Clear test data

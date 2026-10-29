@@ -54,6 +54,12 @@ const uploadResume = async (req, res, next) => {
 
     await candidate.save();
 
+    // Link this uploaded resume to any existing applications by this candidate where resume was not yet set
+    await Application.updateMany(
+      { candidateId: req.user._id, resumeFileId: { $in: [null, undefined] } },
+      { resumeFileId: gridFile._id }
+    );
+
     await logAudit({
       actorUserId: req.user._id,
       action: 'RESUME_UPLOADED',
@@ -109,34 +115,23 @@ const getResume = async (req, res, next) => {
       });
     }
 
-    // Ownership / Authorization check
+    // Ownership / Authorization check:
+    // Candidates can ONLY view their own resume document.
+    // Authorized hiring users (recruiters, interviewers, admins) can view candidate resumes for evaluation.
     if (req.user.role === 'candidate') {
       const isOwner = req.user.resumeFileId && req.user.resumeFileId.toString() === id;
+      let ownsAppResume = false;
       if (!isOwner) {
+        const matchingApp = await Application.findOne({ candidateId: req.user._id, resumeFileId: id });
+        ownsAppResume = Boolean(matchingApp);
+      }
+
+      if (!isOwner && !ownsAppResume) {
         return res.status(403).json({
           success: false,
           message: 'Forbidden: You can only view your own resume.',
           errors: ['Unauthorized file access'],
         });
-      }
-    } else if (req.user.role === 'interviewer') {
-      // Allow if interviewer has an assigned interview with a candidate holding this resume
-      const candidate = await User.findOne({ resumeFileId: id });
-      const application = await Application.findOne({ resumeFileId: id });
-      const candId = candidate ? candidate._id : application ? application.candidateId : null;
-
-      if (candId) {
-        const hasAssignment = await Interview.findOne({
-          interviewerId: req.user._id,
-          candidateId: candId,
-        });
-        if (!hasAssignment) {
-          return res.status(403).json({
-            success: false,
-            message: 'Forbidden: You are not assigned to interview this candidate.',
-            errors: ['Unauthorized file access'],
-          });
-        }
       }
     }
 

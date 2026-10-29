@@ -12,6 +12,8 @@ import {
   IconUser,
   IconBell,
   IconSearch,
+  IconHelpCircle,
+  IconShield,
 } from './Icons';
 
 export const Sidebar = () => {
@@ -54,6 +56,20 @@ export const Sidebar = () => {
             >
               <IconClipboardCheck size={18} />
               <span>Applications & Screening</span>
+            </NavLink>
+            <NavLink
+              to="/recruiter/question-bank"
+              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+            >
+              <IconHelpCircle size={18} />
+              <span>Question Bank</span>
+            </NavLink>
+            <NavLink
+              to="/recruiter/assessments"
+              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+            >
+              <IconShield size={18} />
+              <span>Online Assessments</span>
             </NavLink>
             <NavLink
               to="/recruiter/candidates"
@@ -136,6 +152,13 @@ export const Sidebar = () => {
             >
               <IconClipboardCheck size={18} />
               <span>My Applications</span>
+            </NavLink>
+            <NavLink
+              to="/candidate/assessments"
+              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+            >
+              <IconShield size={18} />
+              <span>My Assessments</span>
             </NavLink>
             <NavLink
               to="/candidate/interviews"

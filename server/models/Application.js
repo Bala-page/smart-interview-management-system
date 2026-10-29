@@ -21,6 +21,8 @@ const applicationSchema = new mongoose.Schema(
       type: String,
       enum: [
         'Applied',
+        'Assessment Assigned',
+        'Assessment Completed',
         'Shortlisted',
         'Interview Scheduled',
         'Interview Completed',
@@ -29,6 +31,23 @@ const applicationSchema = new mongoose.Schema(
         'Hold',
       ],
       default: 'Applied',
+    },
+    assessmentAttemptId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'AssessmentAttempt',
+      default: null,
+    },
+    assessmentScore: {
+      type: Number,
+      default: null,
+    },
+    assessmentPercentage: {
+      type: Number,
+      default: null,
+    },
+    assessmentPassed: {
+      type: Boolean,
+      default: null,
     },
     appliedDate: {
       type: Date,

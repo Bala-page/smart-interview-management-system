@@ -22,10 +22,14 @@ import { InterviewsManagement } from './pages/recruiter/InterviewsManagement';
 import { FeedbackReview } from './pages/recruiter/FeedbackReview';
 import { HiringDecisions } from './pages/recruiter/HiringDecisions';
 import { ReportsAnalytics } from './pages/recruiter/ReportsAnalytics';
+import { QuestionBank } from './pages/recruiter/QuestionBank';
+import { AssessmentsManagement } from './pages/recruiter/AssessmentsManagement';
+import { AssessmentAttemptDetail } from './pages/recruiter/AssessmentAttemptDetail';
 
 // Interviewer Pages
 import { InterviewerDashboard } from './pages/interviewer/InterviewerDashboard';
 import { InterviewerInterviews } from './pages/interviewer/InterviewerInterviews';
+import { InterviewerAssessmentView } from './pages/interviewer/InterviewerAssessmentView';
 
 // Candidate Pages
 import { CandidateDashboard } from './pages/candidate/CandidateDashboard';
@@ -35,6 +39,9 @@ import { CandidateProfile } from './pages/candidate/CandidateProfile';
 import { CandidateApplications } from './pages/candidate/CandidateApplications';
 import { CandidateInterviews } from './pages/candidate/CandidateInterviews';
 import { CandidateNotifications } from './pages/candidate/CandidateNotifications';
+import { CandidateAssessments } from './pages/candidate/CandidateAssessments';
+import { AssessmentTestInterface } from './pages/candidate/AssessmentTestInterface';
+import { AssessmentResult } from './pages/candidate/AssessmentResult';
 
 export const App = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -77,6 +84,9 @@ export const App = () => {
         <Route path="feedback" element={<FeedbackReview />} />
         <Route path="decisions" element={<HiringDecisions />} />
         <Route path="reports" element={<ReportsAnalytics />} />
+        <Route path="question-bank" element={<QuestionBank />} />
+        <Route path="assessments" element={<AssessmentsManagement />} />
+        <Route path="assessments/:attemptId" element={<AssessmentAttemptDetail />} />
       </Route>
 
       {/* Interviewer Protected Routes */}
@@ -90,7 +100,18 @@ export const App = () => {
       >
         <Route path="dashboard" element={<InterviewerDashboard />} />
         <Route path="interviews" element={<InterviewerInterviews />} />
+        <Route path="assessments/:attemptId" element={<InterviewerAssessmentView />} />
       </Route>
+
+      {/* Standalone Fullscreen Test Taking Screen */}
+      <Route
+        path="/candidate/assessments/:attemptId/take"
+        element={
+          <ProtectedRoute allowedRoles={['candidate']}>
+            <AssessmentTestInterface />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Candidate Protected Routes */}
       <Route
@@ -106,6 +127,8 @@ export const App = () => {
         <Route path="jobs/:id" element={<JobDetail />} />
         <Route path="profile" element={<CandidateProfile />} />
         <Route path="applications" element={<CandidateApplications />} />
+        <Route path="assessments" element={<CandidateAssessments />} />
+        <Route path="assessments/:attemptId/result" element={<AssessmentResult />} />
         <Route path="interviews" element={<CandidateInterviews />} />
         <Route path="notifications" element={<CandidateNotifications />} />
       </Route>

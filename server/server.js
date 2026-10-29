@@ -1,5 +1,6 @@
 const app = require('./app');
 const { connectDB } = require('./config/db');
+const { seedQuestionBank } = require('./scripts/seedQuestions');
 
 const PORT = process.env.PORT || 5000;
 
@@ -7,6 +8,9 @@ const startServer = async () => {
   try {
     // Connect to MongoDB
     await connectDB();
+
+    // Ensure questions are seeded in development if empty
+    seedQuestionBank().catch((err) => console.warn('[QuestionBank] Auto-seed error:', err.message));
 
     const server = app.listen(PORT, () => {
       console.log('==================================================');

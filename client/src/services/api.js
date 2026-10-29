@@ -82,7 +82,11 @@ export const api = {
 
   // Resume
   uploadResume: (formData) => request('/resume/upload', { method: 'POST', body: formData }),
-  getResumeUrl: (fileId) => `${API_BASE}/resume/${fileId}`,
+  getResumeUrl: (fileId) => {
+    if (!fileId) return '#';
+    const token = localStorage.getItem('sims_token');
+    return `${API_BASE}/resume/${fileId}${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+  },
 
   // Screening
   runScreening: (applicationId) => request(`/screening/${applicationId}`, { method: 'POST' }),
@@ -121,4 +125,28 @@ export const api = {
   getJobPerformance: () => request('/reports/job-performance'),
   getInterviewerPerformance: () => request('/reports/interviewer-performance'),
   getCandidateRanking: (params = '') => request(`/reports/candidate-ranking?${params}`),
+
+  // Online Assessment & Question Bank
+  getQuestions: (params = '') => request(`/question-bank?${params}`),
+  getQuestionStats: () => request('/question-bank/stats'),
+  getQuestionById: (id) => request(`/question-bank/${id}`),
+  createQuestion: (data) => request('/question-bank', { method: 'POST', body: JSON.stringify(data) }),
+  updateQuestion: (id, data) => request(`/question-bank/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  toggleQuestionStatus: (id) => request(`/question-bank/${id}/status`, { method: 'PUT' }),
+  importQuestions: (questions) => request('/question-bank/import', { method: 'POST', body: JSON.stringify({ questions }) }),
+
+  assignAssessment: (data) => request('/assessments/assign', { method: 'POST', body: JSON.stringify(data) }),
+  getRecruiterAttempts: (params = '') => request(`/assessments/recruiter/attempts?${params}`),
+  getMyAssessments: () => request('/assessments/candidate/my-assessments'),
+  startAssessment: (attemptId) => request(`/assessments/attempts/${attemptId}/start`, { method: 'POST' }),
+  getAttemptForTaking: (attemptId) => request(`/assessments/attempts/${attemptId}/take`),
+  saveAssessmentAnswers: (attemptId, answers) =>
+    request(`/assessments/attempts/${attemptId}/save-answers`, { method: 'PUT', body: JSON.stringify({ answers }) }),
+  recordAssessmentViolation: (attemptId, eventData) =>
+    request(`/assessments/attempts/${attemptId}/record-violation`, { method: 'POST', body: JSON.stringify(eventData) }),
+  submitAssessment: (attemptId, submissionData = {}) =>
+    request(`/assessments/attempts/${attemptId}/submit`, { method: 'POST', body: JSON.stringify(submissionData) }),
+  getAssessmentResult: (attemptId) => request(`/assessments/attempts/${attemptId}/result`),
+  authorizeAssessmentRetake: (attemptId) =>
+    request(`/assessments/attempts/${attemptId}/authorize-retake`, { method: 'POST' }),
 };

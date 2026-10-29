@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const path = require('path');
 
 let gridFSBucket = null;
 
@@ -27,7 +28,11 @@ const connectDB = async () => {
     try {
       const { MongoMemoryServer } = require('mongodb-memory-server');
       console.log('[Database] Starting local embedded MongoDB instance...');
-      const mongod = await MongoMemoryServer.create();
+      const mongod = await MongoMemoryServer.create({
+        binary: {
+          downloadDir: path.join(__dirname, '../.cache/mongodb'),
+        },
+      });
       const uri = mongod.getUri();
       const conn = await mongoose.connect(uri);
       console.log(`[Database] Embedded MongoDB connected at: ${uri}`);

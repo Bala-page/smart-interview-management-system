@@ -44,6 +44,7 @@ export const CandidateProfile = () => {
           bio: u.bio || '',
           resumeFileId: u.resumeFileId || null,
         });
+        dispatch(updateUser(u));
       }
     } catch (err) {
       setErrorMsg(err.message);
@@ -55,6 +56,39 @@ export const CandidateProfile = () => {
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  // Compute live profile readiness score
+  const getReadiness = () => {
+    let score = 20; // Account registration base
+    const hasPhone = Boolean(profile.phone && profile.phone.trim());
+    const hasLocation = Boolean(profile.location && profile.location.trim());
+    const skillsList = profile.skills
+      ? profile.skills.split(',').map((s) => s.trim()).filter(Boolean)
+      : [];
+    const hasSkills = skillsList.length >= 3;
+    const hasExperienceOrBio = Boolean(
+      (Number(profile.experience) > 0) || (profile.bio && profile.bio.trim().length > 10)
+    );
+    const hasResume = Boolean(profile.resumeFileId);
+
+    if (hasPhone) score += 15;
+    if (hasLocation) score += 15;
+    if (hasSkills) score += 20;
+    if (hasExperienceOrBio) score += 10;
+    if (hasResume) score += 20;
+
+    return {
+      score: Math.min(100, score),
+      hasPhone,
+      hasLocation,
+      hasSkills,
+      hasExperienceOrBio,
+      hasResume,
+      skillsCount: skillsList.length,
+    };
+  };
+
+  const readiness = getReadiness();
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
@@ -81,6 +115,7 @@ export const CandidateProfile = () => {
       if (res.success) {
         dispatch(updateUser(res.data));
         setSuccessMsg('Profile details updated successfully!');
+        await fetchProfile();
       }
     } catch (err) {
       setErrorMsg(err.response?.message || err.message || 'Update failed');
@@ -177,6 +212,104 @@ export const CandidateProfile = () => {
           {errorMsg}
         </div>
       )}
+
+      {/* Live Profile Readiness Meter */}
+      <div className="card" style={{ padding: '18px 24px', marginBottom: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+          <div>
+            <strong style={{ fontSize: '0.98rem', color: 'var(--slate-800)' }}>
+              Profile & Resume Readiness Score
+            </strong>
+            <div style={{ fontSize: '0.8rem', color: 'var(--slate-500)', marginTop: 2 }}>
+              Used for deterministic screening and interview shortlisting match calculation
+            </div>
+          </div>
+          <strong style={{
+            fontSize: '1.15rem',
+            fontWeight: 800,
+            color: readiness.score >= 80 ? 'var(--success)' : readiness.score >= 50 ? 'var(--primary)' : '#f59e0b'
+          }}>
+            {readiness.score}% Complete
+          </strong>
+        </div>
+
+        <div
+          style={{
+            height: 10,
+            backgroundColor: 'var(--slate-100)',
+            borderRadius: 'var(--radius-full)',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              height: '100%',
+              width: `${readiness.score}%`,
+              backgroundColor: readiness.score >= 80 ? 'var(--success)' : readiness.score >= 50 ? 'var(--primary)' : '#f59e0b',
+              borderRadius: 'var(--radius-full)',
+              transition: 'width 0.4s ease',
+            }}
+          />
+        </div>
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+          <span style={{
+            fontSize: '0.74rem',
+            padding: '3px 8px',
+            borderRadius: 4,
+            fontWeight: 600,
+            background: readiness.hasResume ? 'var(--success-light)' : 'var(--slate-100)',
+            color: readiness.hasResume ? 'var(--success-hover)' : 'var(--slate-500)',
+            border: `1px solid ${readiness.hasResume ? 'var(--success-border)' : 'var(--slate-200)'}`,
+          }}>
+            {readiness.hasResume ? '✓ PDF Resume Attached' : '○ Upload PDF Resume (+20%)'}
+          </span>
+          <span style={{
+            fontSize: '0.74rem',
+            padding: '3px 8px',
+            borderRadius: 4,
+            fontWeight: 600,
+            background: readiness.hasSkills ? 'var(--success-light)' : 'var(--slate-100)',
+            color: readiness.hasSkills ? 'var(--success-hover)' : 'var(--slate-500)',
+            border: `1px solid ${readiness.hasSkills ? 'var(--success-border)' : 'var(--slate-200)'}`,
+          }}>
+            {readiness.hasSkills ? `✓ ${readiness.skillsCount} Skills Added` : '○ Add 3+ Skills (+20%)'}
+          </span>
+          <span style={{
+            fontSize: '0.74rem',
+            padding: '3px 8px',
+            borderRadius: 4,
+            fontWeight: 600,
+            background: readiness.hasPhone ? 'var(--success-light)' : 'var(--slate-100)',
+            color: readiness.hasPhone ? 'var(--success-hover)' : 'var(--slate-500)',
+            border: `1px solid ${readiness.hasPhone ? 'var(--success-border)' : 'var(--slate-200)'}`,
+          }}>
+            {readiness.hasPhone ? '✓ Phone Number' : '○ Add Phone (+15%)'}
+          </span>
+          <span style={{
+            fontSize: '0.74rem',
+            padding: '3px 8px',
+            borderRadius: 4,
+            fontWeight: 600,
+            background: readiness.hasLocation ? 'var(--success-light)' : 'var(--slate-100)',
+            color: readiness.hasLocation ? 'var(--success-hover)' : 'var(--slate-500)',
+            border: `1px solid ${readiness.hasLocation ? 'var(--success-border)' : 'var(--slate-200)'}`,
+          }}>
+            {readiness.hasLocation ? '✓ Location' : '○ Add Location (+15%)'}
+          </span>
+          <span style={{
+            fontSize: '0.74rem',
+            padding: '3px 8px',
+            borderRadius: 4,
+            fontWeight: 600,
+            background: readiness.hasExperienceOrBio ? 'var(--success-light)' : 'var(--slate-100)',
+            color: readiness.hasExperienceOrBio ? 'var(--success-hover)' : 'var(--slate-500)',
+            border: `1px solid ${readiness.hasExperienceOrBio ? 'var(--success-border)' : 'var(--slate-200)'}`,
+          }}>
+            {readiness.hasExperienceOrBio ? '✓ Experience / Bio' : '○ Add Experience / Bio (+10%)'}
+          </span>
+        </div>
+      </div>
 
       {/* Resume Upload Card */}
       <div className="card" style={{ marginBottom: 24 }}>

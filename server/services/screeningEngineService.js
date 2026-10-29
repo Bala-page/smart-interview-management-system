@@ -67,11 +67,12 @@ const evaluateCandidate = (job, candidate, resumeSkills = [], detectedResumeExpe
 
   // 3. Profile Completeness Score
   let profilePoints = 0;
-  if (candidate.phone && candidate.phone.trim()) profilePoints += 25;
-  if (candidate.location && candidate.location.trim()) profilePoints += 25;
-  if (candidate.bio && candidate.bio.trim().length > 20) profilePoints += 25;
-  if (candidate.skills && candidate.skills.length >= 3) profilePoints += 25;
-  const profileScore = profilePoints;
+  if (candidate.phone && candidate.phone.trim()) profilePoints += 20;
+  if (candidate.location && candidate.location.trim()) profilePoints += 20;
+  if ((candidate.bio && candidate.bio.trim().length > 10) || (Number(candidate.experience) > 0)) profilePoints += 20;
+  if (candidate.skills && candidate.skills.length >= 3) profilePoints += 20;
+  if (candidate.resumeFileId || (normalizedResumeSkills && normalizedResumeSkills.length > 0)) profilePoints += 20;
+  const profileScore = Math.min(100, profilePoints);
 
   // 4. Overall Weighted Score
   const overallMatchScore = Math.round(

@@ -313,6 +313,69 @@ export const ApplicationDetail = () => {
         </div>
       </div>
 
+      {/* Online Assessment Card */}
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div className="card-header">
+          <h3 className="card-title">Online Technical Assessment (10 MCQs)</h3>
+          {application.assessmentAttemptId ? (
+            <Link to={`/recruiter/assessments/${application.assessmentAttemptId}`} className="btn btn-outline btn-sm">
+              <IconAward size={14} /> View Full Assessment Breakdown
+            </Link>
+          ) : (
+            <Link
+              to={`/recruiter/assessments?jobId=${job._id}&appId=${application._id}&candidateId=${candidate._id}&openAssign=true`}
+              className="btn btn-primary btn-sm"
+            >
+              <IconAward size={14} /> Assign Assessment
+            </Link>
+          )}
+        </div>
+
+        {application.assessmentAttemptId ? (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+              <div>
+                <span style={{ color: 'var(--slate-400)', display: 'block', fontSize: '0.78rem' }}>Assessment Status</span>
+                <span className="badge" style={{
+                  background: application.assessmentPassed ? '#dcfce7' : application.assessmentScore !== null ? '#fee2e2' : '#fef3c7',
+                  color: application.assessmentPassed ? '#15803d' : application.assessmentScore !== null ? '#b91c1c' : '#b45309',
+                  fontWeight: 700,
+                  marginTop: 4,
+                  display: 'inline-block',
+                }}>
+                  {application.assessmentPassed ? 'PASSED' : application.assessmentScore !== null ? 'NOT QUALIFIED' : 'TEST IN PROGRESS / ASSIGNED'}
+                </span>
+              </div>
+
+              {application.assessmentScore !== null && (
+                <>
+                  <div>
+                    <span style={{ color: 'var(--slate-400)', display: 'block', fontSize: '0.78rem' }}>Score</span>
+                    <strong style={{ fontSize: '1.2rem', color: application.assessmentPassed ? '#15803d' : '#b91c1c' }}>
+                      {application.assessmentScore} / 10
+                    </strong>
+                  </div>
+                  <div>
+                    <span style={{ color: 'var(--slate-400)', display: 'block', fontSize: '0.78rem' }}>Percentage</span>
+                    <strong style={{ fontSize: '1.2rem', color: 'var(--slate-900)' }}>
+                      {application.assessmentPercentage}%
+                    </strong>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <Link to={`/recruiter/assessments/${application.assessmentAttemptId}`} className="btn btn-secondary btn-sm">
+              Review Questions & Cheating Log →
+            </Link>
+          </div>
+        ) : (
+          <div style={{ color: 'var(--slate-500)', fontSize: '0.88rem' }}>
+            No technical assessment has been assigned to this candidate yet. You can assign a 15-minute 10-MCQ assessment based on the job's required skills.
+          </div>
+        )}
+      </div>
+
       {/* Interview & Feedback Records */}
       <div className="card">
         <div className="card-header">

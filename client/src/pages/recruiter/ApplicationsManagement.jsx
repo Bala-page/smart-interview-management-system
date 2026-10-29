@@ -238,6 +238,13 @@ export const ApplicationsManagement = () => {
                           >
                             <IconEye size={14} /> Review
                           </Link>
+                          <Link
+                            to={`/recruiter/assessments?jobId=${app.jobId?._id}&appId=${app._id}&candidateId=${app.candidateId?._id}&openAssign=true`}
+                            className="btn btn-outline btn-sm"
+                            title="Assign Online Assessment"
+                          >
+                            <IconAward size={14} /> Assess
+                          </Link>
                           {app.applicationStatus === 'Applied' && (
                             <button
                               className="btn btn-primary btn-sm"

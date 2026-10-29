@@ -68,6 +68,13 @@ const skillAliases = {
   'ml': 'Machine Learning',
   'dl': 'Deep Learning',
   'ai': 'Artificial Intelligence',
+  'spring': 'Spring',
+  'spring boot': 'Spring',
+  'springboot': 'Spring',
+  'spring-boot': 'Spring',
+  'microservices': 'Microservices',
+  'microservice': 'Microservices',
+  'java': 'Java',
 };
 
 // Dynamic in-memory dictionary cache that recruiters can expand at runtime

@@ -12,6 +12,10 @@ const notificationSchema = new mongoose.Schema(
       enum: [
         'APPLICATION_SUBMITTED',
         'CANDIDATE_SHORTLISTED',
+        'ASSESSMENT_ASSIGNED',
+        'ASSESSMENT_SUBMITTED',
+        'ASSESSMENT_EVALUATED',
+        'ASSESSMENT_TERMINATED',
         'INTERVIEW_SCHEDULED',
         'INTERVIEW_RESCHEDULED',
         'INTERVIEW_CANCELLED',
@@ -36,7 +40,7 @@ const notificationSchema = new mongoose.Schema(
     },
     relatedEntityType: {
       type: String,
-      enum: ['Application', 'Interview', 'Job', 'Feedback', 'User', 'General'],
+      enum: ['Application', 'Interview', 'Job', 'Feedback', 'User', 'Assessment', 'AssessmentAttempt', 'General'],
       default: 'General',
     },
     relatedEntityId: {

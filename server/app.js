@@ -18,6 +18,8 @@ const feedbackRoutes = require('./routes/feedbackRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const questionBankRoutes = require('./routes/questionBankRoutes');
+const assessmentRoutes = require('./routes/assessmentRoutes');
 
 // Error handling middleware
 const errorHandler = require('./middleware/errorHandler');
@@ -77,6 +79,8 @@ app.use('/api/feedback', feedbackRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/question-bank', questionBankRoutes);
+app.use('/api/assessments', assessmentRoutes);
 
 // Catch 404
 app.use((req, res, next) => {

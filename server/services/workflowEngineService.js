@@ -4,13 +4,15 @@ const { logAudit } = require('./auditService');
 
 // Controlled state transition rules
 const ALLOWED_TRANSITIONS = {
-  Applied: ['Shortlisted', 'Rejected', 'Hold'],
-  Shortlisted: ['Interview Scheduled', 'Rejected', 'Hold', 'Applied'],
+  Applied: ['Shortlisted', 'Assessment Assigned', 'Rejected', 'Hold'],
+  'Assessment Assigned': ['Assessment Completed', 'Shortlisted', 'Rejected', 'Hold', 'Applied'],
+  'Assessment Completed': ['Shortlisted', 'Interview Scheduled', 'Rejected', 'Hold', 'Assessment Assigned'],
+  Shortlisted: ['Assessment Assigned', 'Interview Scheduled', 'Rejected', 'Hold', 'Applied'],
   'Interview Scheduled': ['Interview Completed', 'Shortlisted', 'Selected', 'Rejected', 'Hold'],
   'Interview Completed': ['Selected', 'Rejected', 'Hold', 'Interview Scheduled'],
-  Hold: ['Shortlisted', 'Interview Scheduled', 'Selected', 'Rejected', 'Applied'],
+  Hold: ['Shortlisted', 'Assessment Assigned', 'Interview Scheduled', 'Selected', 'Rejected', 'Applied'],
   Selected: ['Hold', 'Rejected'],
-  Rejected: ['Applied', 'Shortlisted', 'Hold'],
+  Rejected: ['Applied', 'Shortlisted', 'Assessment Assigned', 'Hold'],
 };
 
 /**

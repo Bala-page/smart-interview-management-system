@@ -58,7 +58,9 @@ export const CandidateDashboard = () => {
               Profile & Resume Readiness
             </strong>
           </div>
-          <strong style={{ color: 'var(--primary)', fontSize: '1rem' }}>{profileCompletion}% Complete</strong>
+          <strong style={{ color: profileCompletion >= 80 ? 'var(--success)' : 'var(--primary)', fontSize: '1rem', fontWeight: 800 }}>
+            {profileCompletion}% Complete
+          </strong>
         </div>
 
         <div
@@ -73,12 +75,73 @@ export const CandidateDashboard = () => {
             style={{
               height: '100%',
               width: `${profileCompletion}%`,
-              backgroundColor: profileCompletion >= 80 ? 'var(--success)' : 'var(--primary)',
+              backgroundColor: profileCompletion >= 80 ? 'var(--success)' : profileCompletion >= 50 ? 'var(--primary)' : '#f59e0b',
               borderRadius: 'var(--radius-full)',
               transition: 'width 0.6s ease',
             }}
           />
         </div>
+
+        {/* Readiness Checklist Badges */}
+        {data?.profileDetails && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+            <span style={{
+              fontSize: '0.74rem',
+              padding: '3px 8px',
+              borderRadius: 4,
+              fontWeight: 600,
+              background: data.profileDetails.hasResume ? 'var(--success-light)' : 'var(--slate-100)',
+              color: data.profileDetails.hasResume ? 'var(--success-hover)' : 'var(--slate-500)',
+              border: `1px solid ${data.profileDetails.hasResume ? 'var(--success-border)' : 'var(--slate-200)'}`,
+            }}>
+              {data.profileDetails.hasResume ? '✓ PDF Resume Uploaded' : '○ Resume Required (+20%)'}
+            </span>
+            <span style={{
+              fontSize: '0.74rem',
+              padding: '3px 8px',
+              borderRadius: 4,
+              fontWeight: 600,
+              background: data.profileDetails.hasSkills ? 'var(--success-light)' : 'var(--slate-100)',
+              color: data.profileDetails.hasSkills ? 'var(--success-hover)' : 'var(--slate-500)',
+              border: `1px solid ${data.profileDetails.hasSkills ? 'var(--success-border)' : 'var(--slate-200)'}`,
+            }}>
+              {data.profileDetails.hasSkills ? '✓ 3+ Skills Recorded' : '○ Add 3+ Skills (+20%)'}
+            </span>
+            <span style={{
+              fontSize: '0.74rem',
+              padding: '3px 8px',
+              borderRadius: 4,
+              fontWeight: 600,
+              background: data.profileDetails.hasPhone ? 'var(--success-light)' : 'var(--slate-100)',
+              color: data.profileDetails.hasPhone ? 'var(--success-hover)' : 'var(--slate-500)',
+              border: `1px solid ${data.profileDetails.hasPhone ? 'var(--success-border)' : 'var(--slate-200)'}`,
+            }}>
+              {data.profileDetails.hasPhone ? '✓ Phone Number' : '○ Phone Needed (+15%)'}
+            </span>
+            <span style={{
+              fontSize: '0.74rem',
+              padding: '3px 8px',
+              borderRadius: 4,
+              fontWeight: 600,
+              background: data.profileDetails.hasLocation ? 'var(--success-light)' : 'var(--slate-100)',
+              color: data.profileDetails.hasLocation ? 'var(--success-hover)' : 'var(--slate-500)',
+              border: `1px solid ${data.profileDetails.hasLocation ? 'var(--success-border)' : 'var(--slate-200)'}`,
+            }}>
+              {data.profileDetails.hasLocation ? '✓ Location' : '○ Location Needed (+15%)'}
+            </span>
+            <span style={{
+              fontSize: '0.74rem',
+              padding: '3px 8px',
+              borderRadius: 4,
+              fontWeight: 600,
+              background: data.profileDetails.hasExperienceOrBio ? 'var(--success-light)' : 'var(--slate-100)',
+              color: data.profileDetails.hasExperienceOrBio ? 'var(--success-hover)' : 'var(--slate-500)',
+              border: `1px solid ${data.profileDetails.hasExperienceOrBio ? 'var(--success-border)' : 'var(--slate-200)'}`,
+            }}>
+              {data.profileDetails.hasExperienceOrBio ? '✓ Experience / Bio' : '○ Experience / Bio (+10%)'}
+            </span>
+          </div>
+        )}
 
         {profileCompletion < 100 && (
           <div style={{ marginTop: 10, fontSize: '0.8rem', color: 'var(--slate-500)' }}>

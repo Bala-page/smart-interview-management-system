@@ -8,8 +8,14 @@ const protect = async (req, res, next) => {
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.query && req.query.token) {
+    // Support token in query string for direct browser navigation (e.g. streaming resume PDFs in new tabs)
+    token = req.query.token;
+  }
+
+  if (token) {
     try {
-      token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(
         token,
         process.env.JWT_SECRET || 'fallback_local_secret_2026'
@@ -37,13 +43,11 @@ const protect = async (req, res, next) => {
     }
   }
 
-  if (!token) {
-    return res.status(401).json({
-      success: false,
-      message: 'Access denied. No authentication token provided.',
-      errors: ['Authorization header missing or invalid format'],
-    });
-  }
+  return res.status(401).json({
+    success: false,
+    message: 'Access denied. No authentication token provided.',
+    errors: ['Authorization header missing or invalid format'],
+  });
 };
 
 module.exports = { protect };
